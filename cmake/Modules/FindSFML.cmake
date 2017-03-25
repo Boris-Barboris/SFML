@@ -140,26 +140,26 @@ foreach(FIND_SFML_COMPONENT ${SFML_FIND_COMPONENTS})
     else()
         # static release library
         find_library(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_STATIC_RELEASE
-                     NAMES ${FIND_SFML_COMPONENT_NAME}-s
+                     NAMES ${FIND_SFML_COMPONENT_NAME}
                      PATH_SUFFIXES lib64 lib
                      PATHS ${FIND_SFML_PATHS})
 
         # static debug library
         find_library(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_STATIC_DEBUG
-                     NAMES ${FIND_SFML_COMPONENT_NAME}-s-d
+                     NAMES ${FIND_SFML_COMPONENT_NAME}-d
                      PATH_SUFFIXES lib64 lib
                      PATHS ${FIND_SFML_PATHS})
 
         # dynamic release library
         find_library(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_DYNAMIC_RELEASE
                      NAMES ${FIND_SFML_COMPONENT_NAME}
-                     PATH_SUFFIXES lib64 lib
+                     PATH_SUFFIXES so dll
                      PATHS ${FIND_SFML_PATHS})
 
         # dynamic debug library
         find_library(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_DYNAMIC_DEBUG
                      NAMES ${FIND_SFML_COMPONENT_NAME}-d
-                     PATH_SUFFIXES lib64 lib
+                     PATH_SUFFIXES so dll
                      PATHS ${FIND_SFML_PATHS})
 
         # choose the entries that fit the requested link type
