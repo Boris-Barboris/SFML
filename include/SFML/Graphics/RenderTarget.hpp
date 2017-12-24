@@ -70,6 +70,19 @@ public:
     void clear(const Color& color = Color(0, 0, 0, 255));
 
     ////////////////////////////////////////////////////////////
+    /// \brief Change the current active scissor rectangle
+    ///
+    /// \param scissor New rectangle to use
+    ///
+    ////////////////////////////////////////////////////////////
+    void setScissor(const IntRect& scissor);
+
+    ////////////////////////////////////////////////////////////
+    /// \brief Change whether scissor test is enabled or disabled.
+    ////////////////////////////////////////////////////////////
+    void setScissorTest(bool enable);
+
+    ////////////////////////////////////////////////////////////
     /// \brief Change the current active view
     ///
     /// The view is like a 2D camera, it controls which part of
@@ -371,6 +384,12 @@ private:
     void applyCurrentView();
 
     ////////////////////////////////////////////////////////////
+    /// \brief Apply the current scissor rectangle
+    ///
+    ////////////////////////////////////////////////////////////
+    void applyCurrentScissor();
+
+    ////////////////////////////////////////////////////////////
     /// \brief Apply a new blending mode
     ///
     /// \param mode Blending mode to apply
@@ -412,6 +431,7 @@ private:
 
         bool      glStatesSet;    ///< Are our internal GL states set yet?
         bool      viewChanged;    ///< Has the current view changed since last draw?
+        bool      scissorChanged;
         BlendMode lastBlendMode;  ///< Cached blending mode
         Uint64    lastTextureId;  ///< Cached texture
         bool      useVertexCache; ///< Did we previously use the vertex cache?
@@ -423,6 +443,8 @@ private:
     ////////////////////////////////////////////////////////////
     View        m_defaultView; ///< Default view
     View        m_view;        ///< Current view
+    IntRect     m_scissor;     ///< Current scissor-test rectangle
+    bool        m_scissor_test;
     StatesCache m_cache;       ///< Render states cache
 };
 

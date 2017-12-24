@@ -246,6 +246,9 @@ void RenderTarget::draw(const Vertex* vertices, std::size_t vertexCount,
         if (m_cache.viewChanged)
             applyCurrentView();
 
+        if (m_cache.scissorChanged)
+            applyCurrentScissor();
+
         // Apply the blend mode
         if (states.blendMode != m_cache.lastBlendMode)
             applyBlendMode(states.blendMode);
@@ -377,6 +380,7 @@ void RenderTarget::resetGLStates()
         glCheck(glDisable(GL_ALPHA_TEST));
         glCheck(glEnable(GL_TEXTURE_2D));
         glCheck(glEnable(GL_BLEND));
+        m_scissor_test ? glCheck(glEnable(GL_SCISSOR_TEST)) : glCheck(glDisable(GL_SCISSOR_TEST));
         glCheck(glMatrixMode(GL_MODELVIEW));
         glCheck(glEnableClientState(GL_VERTEX_ARRAY));
         glCheck(glEnableClientState(GL_COLOR_ARRAY));
@@ -404,11 +408,28 @@ void RenderTarget::initialize()
     // Setup the default and current views
     m_defaultView.reset(FloatRect(0, 0, static_cast<float>(getSize().x), static_cast<float>(getSize().y)));
     m_view = m_defaultView;
+    m_scissor = IntRect(0, 0, getSize().x, getSize().y);
+    m_scissor_test = false;
 
     // Set GL states only on first draw, so that we don't pollute user's states
     m_cache.glStatesSet = false;
 }
 
+
+////////////////////////////////////////////////////////////
+void RenderTarget::setScissor(const IntRect& scissor)
+{
+    m_scissor = scissor;
+    m_cache.scissorChanged = true;
+}
+
+
+////////////////////////////////////////////////////////////
+void RenderTarget::setScissorTest(bool enabled)
+{
+    m_scissor_test = enabled;
+    m_cache.glStatesSet = false;
+}
 
 ////////////////////////////////////////////////////////////
 void RenderTarget::applyCurrentView()
@@ -428,6 +449,12 @@ void RenderTarget::applyCurrentView()
     m_cache.viewChanged = false;
 }
 
+void RenderTarget::applyCurrentScissor()
+{
+    int top = getSize().y - (m_scissor.top + m_scissor.height);
+    glCheck(glScissor(m_scissor.left, top, m_scissor.width, m_scissor.height));
+    m_cache.scissorChanged = false;
+}
 
 ////////////////////////////////////////////////////////////
 void RenderTarget::applyBlendMode(const BlendMode& mode)
