@@ -100,6 +100,9 @@ void RenderTarget::clear(const Color& color)
 {
     if (setActive(true))
     {
+        if (m_cache.scissorChanged)
+            applyCurrentScissor();
+
         // Unbind texture to fix RenderTexture preventing clear
         applyTexture(NULL);
 
